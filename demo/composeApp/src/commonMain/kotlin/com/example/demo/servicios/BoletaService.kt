@@ -13,13 +13,7 @@ import kotlin.time.ExperimentalTime
 /**
  * Orquesta toda la lógica de negocio para la gestión de boletas.
  * Utiliza los repositorios para acceder a los datos y otros servicios para tareas específicas.
- *
- * @property clientes Repositorio para acceder a los datos de los clientes.
- * @property medidores Repositorio para acceder a los datos de los medidores.
- * @property lecturas Repositorio para acceder a los datos de las lecturas.
- * @property boletas Repositorio para guardar y recuperar las boletas.
- * @property tarifas Servicio para determinar la tarifa aplicable a un cliente.
- */
+**/
 class BoletaService(
     private val clientes: ClienteRepositorio,
     private val medidores: MedidorRepositorio,
