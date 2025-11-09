@@ -10,8 +10,10 @@ import com.lowagie.text.pdf.PdfWriter
 import java.awt.Color
 import java.io.ByteArrayOutputStream
 
-//Implementación REAL del PdfService para la plataforma Desktop (JVM).
-//Utiliza la librería OpenPDF para generar un archivo PDF válido.
+/**
+ * Implementación REAL del PdfService para la plataforma Desktop (JVM).
+ * Utiliza la librería OpenPDF para generar un archivo PDF válido.
+ */
 class DesktopPdfService : PdfService {
     override fun generarBoletasPDF(boletas: List<Boleta>, clientes: Map<String, Cliente>): ByteArray {
         val outputStream = ByteArrayOutputStream()
