@@ -1,12 +1,15 @@
 package com.example.demo.dominio
 
+// Clase que representa la tarifa residencial con su estructura de costos y cálculo.
 data class TarifaResidencial(
     val cargoFijo: Double,
     val precioKwh: Double,
     val iva: Double
 ) : Tarifa {
+    // Nombre descriptivo de la tarifa.
     override fun nombre(): String = "Tarifa Residencial"
 
+    // Cálculo detallado de la tarifa basado en el consumo en kWh.
     override fun calcular(kwh: Double): TarifaDetalle {
         val subtotal = kwh * precioKwh
         val cargos = cargoFijo

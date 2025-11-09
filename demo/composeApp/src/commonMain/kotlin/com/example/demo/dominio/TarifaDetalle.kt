@@ -3,9 +3,7 @@ package com.example.demo.dominio
 import kotlinx.serialization.Serializable
 
 @Serializable
-/**
- * Contiene el desglose del cálculo de una tarifa.
- */
+// Clase que representa el detalle del cálculo de una tarifa.
 data class TarifaDetalle(
     val kwh: Double,
     val subtotal: Double,
