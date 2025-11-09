@@ -4,10 +4,10 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
 
-/**
- * Implementación de IStorageDriver que guarda los datos en archivos locales.
- * Cada clave corresponde a un archivo dentro de un directorio base.
- */
+
+//Implementación de IStorageDriver que guarda los datos en archivos locales.
+//Cada clave corresponde a un archivo dentro de un directorio base.
+
 class FileStorageDriver(directory: String = ".cge_gestion_data") : IStorageDriver {
     // Define la ruta base en el directorio home del usuario
     private val basePath = Paths.get(System.getProperty("user.home"), directory)
