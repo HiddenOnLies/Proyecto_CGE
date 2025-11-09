@@ -44,6 +44,7 @@ kotlin {
             implementation(libs.kotlinx.coroutinesSwing)
             implementation("org.apache.pdfbox:pdfbox:3.0.2")
             implementation("com.github.librepdf:openpdf:1.3.30")
+            implementation(compose.materialIconsExtended)
         }
         jsMain.dependencies {
             implementation(compose.html.core)

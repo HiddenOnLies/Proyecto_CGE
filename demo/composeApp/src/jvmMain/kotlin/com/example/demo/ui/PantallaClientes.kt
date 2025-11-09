@@ -6,7 +6,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.demo.AppContainer
@@ -14,11 +17,6 @@ import com.example.demo.dominio.Cliente
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
-/**
- * Muestra la lista de clientes y un formulario para añadir nuevos.
- * @param onClientClick Una función que se ejecuta cuando el usuario hace clic en un cliente,
- * pasando el RUT de ese cliente.
- */
 @Composable
 fun PantallaClientes(appContainer: AppContainer, onClientClick: (String) -> Unit) {
     var listaClientes by remember { mutableStateOf(emptyList<Cliente>()) }
@@ -26,8 +24,12 @@ fun PantallaClientes(appContainer: AppContainer, onClientClick: (String) -> Unit
     var rutInput by remember { mutableStateOf("") }
     var direccionInput by remember { mutableStateOf("") }
 
-    LaunchedEffect(Unit) {
+    fun refrescarClientes() {
         listaClientes = appContainer.clienteRepo.listar()
+    }
+
+    LaunchedEffect(Unit) {
+        refrescarClientes()
     }
 
     fun agregarCliente() {
@@ -39,13 +41,19 @@ fun PantallaClientes(appContainer: AppContainer, onClientClick: (String) -> Unit
                 createdAt = Clock.System.now(), updatedAt = Clock.System.now()
             )
             appContainer.clienteRepo.crear(nuevoCliente)
-            listaClientes = appContainer.clienteRepo.listar()
+            refrescarClientes()
             nombreInput = ""; rutInput = ""; direccionInput = ""
         }
     }
 
+    fun eliminarCliente(rut: String) {
+        appContainer.clienteRepo.eliminar(rut)
+        refrescarClientes()
+    }
+
+    // --- ESTRUCTURA DE LA UI COMPLETA ---
     Row(Modifier.fillMaxSize()) {
-        // Columna Izquierda: Lista de Clientes
+        // Columna Izquierda: Lista de Clientes con botón de eliminar
         Column(Modifier.weight(1f).padding(16.dp)) {
             Text("Lista de Clientes", style = MaterialTheme.typography.h5)
             Text("(Haz clic en un cliente para ver sus detalles)")
@@ -53,21 +61,26 @@ fun PantallaClientes(appContainer: AppContainer, onClientClick: (String) -> Unit
 
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(listaClientes) { cliente ->
-                    Card(
-                        elevation = 4.dp,
-                        modifier = Modifier.fillMaxWidth().clickable { onClientClick(cliente.rut) }
-                    ) {
-                        Column(Modifier.padding(16.dp)) {
-                            Text(cliente.nombre, style = MaterialTheme.typography.h6)
-                            Text("RUT: ${cliente.rut}")
-                            Text("Dirección: ${cliente.direccionFacturacion}")
+                    Card(elevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                        Row(
+                            modifier = Modifier.clickable { onClientClick(cliente.rut) }.padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(cliente.nombre, style = MaterialTheme.typography.h6)
+                                Text("RUT: ${cliente.rut}")
+                            }
+                            IconButton(onClick = { eliminarCliente(cliente.rut) }) {
+                                Icon(Icons.Default.Delete, contentDescription = "Eliminar Cliente", tint = MaterialTheme.colors.error)
+                            }
                         }
                     }
                 }
             }
         }
 
-        // Columna Derecha: Formulario para Agregar Nuevo Cliente
+        // Columna Derecha: Formulario para Agregar Nuevo Cliente (CÓDIGO RESTAURADO)
         Column(Modifier.weight(1f).padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("Agregar Nuevo Cliente", style = MaterialTheme.typography.h5)
             OutlinedTextField(

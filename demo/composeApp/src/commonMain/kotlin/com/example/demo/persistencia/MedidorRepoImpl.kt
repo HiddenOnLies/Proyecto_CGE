@@ -28,4 +28,11 @@ class MedidorRepoImpl(private val persistencia: PersistenciaDatos) : MedidorRepo
     private fun obtenerIdsDeCliente(rutCliente: String): List<String> {
         return persistencia.read<List<String>>(indexClienteMedidor + rutCliente) ?: emptyList()
     }
+
+    override fun actualizar(medidor: Medidor): Medidor {
+        // La función 'save' sobrescribe el archivo existente con el mismo 'key',
+        // lo que funciona perfectamente como una operación de actualización.
+        persistencia.save(prefix + medidor.codigo, medidor)
+        return medidor
+    }
 }

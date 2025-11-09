@@ -7,4 +7,5 @@ interface MedidorRepositorio {
     fun obtenerPorCodigo(codigo: String): Medidor?
     fun listarPorCliente(rutCliente: String): List<Medidor>
     fun eliminar(codigo: String): Boolean
+    fun actualizar(medidor: Medidor): Medidor
 }
