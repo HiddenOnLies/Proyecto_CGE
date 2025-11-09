@@ -10,17 +10,17 @@ import kotlin.time.Instant
 @SerialName("MedidorMonofasico")
 /**
  * Representa un medidor de tipo monofásico.
- * Hereda de la clase abstracta Medidor.
+ * Hereda de la clase Medidor y agrega la propiedad de potencia máxima permitida.
  */
 data class MedidorMonofasico(
-    // Propiedades de EntidadBase
+    // Propiedades heredadas de EntidadBase
     override val id: String,
     @Serializable(with = InstantSerializer::class)
     override val createdAt: Instant,
     @Serializable(with = InstantSerializer::class)
     override val updatedAt: Instant,
 
-    // Propiedades de Medidor
+    // Propiedades heredadas de Medidor
     override val codigo: String,
     override val direccionSuministro: String,
     override val activo: Boolean,
@@ -29,5 +29,5 @@ data class MedidorMonofasico(
     val potenciaMaxKw: Double
 ) : Medidor() {
 
-    override fun tipo(): String = "Monofásico"
+    override fun tipo(): String = "Monofásico" // Retorna el tipo de medidor
 }

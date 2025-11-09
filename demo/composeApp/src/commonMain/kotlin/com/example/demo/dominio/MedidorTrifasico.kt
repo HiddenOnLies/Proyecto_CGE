@@ -10,17 +10,17 @@ import kotlin.time.Instant
 @SerialName("MedidorTrifasico")
 /**
  * Representa un medidor de tipo trifásico.
- * Hereda de la clase abstracta Medidor.
+ * Hereda de la clase abstracta Medidor y grega propiedades específicas como la potencia máxima y el factor de potencia.
  */
 data class MedidorTrifasico(
-    // Propiedades de EntidadBase
+    // Propiedades heredadas de EntidadBase
     override val id: String,
     @Serializable(with = InstantSerializer::class)
     override val createdAt: Instant,
     @Serializable(with = InstantSerializer::class)
     override val updatedAt: Instant,
 
-    // Propiedades de Medidor
+    // Propiedades heredadas de Medidor
     override val codigo: String,
     override val direccionSuministro: String,
     override val activo: Boolean,
@@ -30,5 +30,5 @@ data class MedidorTrifasico(
     val factorPotencia: Double
 ) : Medidor() {
 
-    override fun tipo(): String = "Trifásico"
+    override fun tipo(): String = "Trifásico" // Retorna el tipo de medidor
 }

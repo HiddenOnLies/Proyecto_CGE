@@ -22,7 +22,7 @@ object InstantSerializer : KSerializer<Instant> {
 
     // 2. Lógica para guardar (Serializar): De Objeto Instant -> A String
     override fun serialize(encoder: Encoder, value: Instant) {
-        // Simplemente convierte el Instant a su representación de texto estándar.
+        // Convierte el Instant a su representación de texto estándar.
         encoder.encodeString(value.toString())
     }
 

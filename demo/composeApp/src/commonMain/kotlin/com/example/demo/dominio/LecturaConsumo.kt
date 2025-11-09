@@ -5,11 +5,12 @@ import kotlinx.serialization.Serializable
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
-@Serializable
+@Serializable // Permite convertir la clase a JSON u otros formatos
 /**
- * Representa la lectura de consumo de un medidor en un mes y año específicos.
- * Hereda las propiedades de EntidadBase.
- */
+ * Representa la lectura mensual de consumo eléctrico registrada por un medidor.
+ * Contiene el identificador del medidor, el periodo (año y mes)
+ * y la cantidad de energía consumida en kWh.
+ **/
 data class LecturaConsumo(
     // Propiedades de EntidadBase
     override val id: String,
