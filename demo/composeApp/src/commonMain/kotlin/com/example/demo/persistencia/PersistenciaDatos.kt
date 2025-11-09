@@ -9,11 +9,10 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 
-/**
- * Clase central que gestiona la serialización y el acceso al storage driver.
- * Traduce objetos (ej: Cliente, Boleta) a JSON y viceversa.
- * Es la implementación de "PersistenciaDatos" requerida en la pauta.
- */
+
+    //Clase central que gestiona la serialización y el acceso al storage driver.
+    //Traduce objetos (ej: Cliente, Boleta) a JSON y viceversa.
+    //Es la implementación de "PersistenciaDatos" requerida en la pauta.
 class PersistenciaDatos(
     // Dependencia del "driver" (ej: en memoria, en archivo) que guarda los bytes.
     val driver: IStorageDriver

@@ -1,9 +1,7 @@
 package com.example.demo.persistencia
 
-/**
- * Implementación de "driver" de almacenamiento que guarda todo en memoria RAM.
- * Los datos se pierden al cerrar la aplicación. Útil para pruebas.
- */
+//Implementación de "driver" de almacenamiento que guarda todo en memoria RAM.
+//Los datos se pierden al cerrar la aplicación. Útil para pruebas.
 class InMemoryStorageDriver : IStorageDriver {
 
     // Almacén principal, es un mapa mutable que guarda todo en memoria.
