@@ -22,7 +22,7 @@ import kotlin.time.ExperimentalTime
  */
 class BoletaService(
     private val clientes: ClienteRepositorio,
-    private val medidores: MedidoresRepositorio,
+    private val medidores: MedidorRepositorio,
     private val lecturas: LecturaRepositorio,
     private val boletas: BoletaRepositorio,
     private val tarifas: TarifaService
