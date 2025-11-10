@@ -6,26 +6,26 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-// Paleta de colores para el tema oscuro (la que ya tenías)
+// Paleta de colores personalizada para el Tema Oscuro.
 private val DarkColorPalette = darkColors(
     primary = Color(0xFFBB86FC),
     primaryVariant = Color(0xFF3700B3),
     secondary = Color(0xFF03DAC6),
-    background = Color(0xFF121212),
-    surface = Color(0xFF1E1E1E),
+    background = Color(0xFF121212), // Fondo casi negro.
+    surface = Color(0xFF1E1E1E), // Color de las tarjetas (un poco más claro).
     onPrimary = Color.Black,
     onSecondary = Color.Black,
     onBackground = Color.White,
     onSurface = Color.White,
 )
 
-// --- NUEVA PALETA DE COLORES PARA EL TEMA CLARO ---
+// Paleta de colores personalizada para el Tema Claro.
 private val LightColorPalette = lightColors(
     primary = Color(0xFF6200EE),
     primaryVariant = Color(0xFF3700B3),
     secondary = Color(0xFF03DAC6),
-    background = Color.White,
-    surface = Color(0xFFF2F2F2),
+    background = Color.White, // Fondo blanco.
+    surface = Color(0xFFF2F2F2), // Color de las tarjetas (gris claro).
     onPrimary = Color.White,
     onSecondary = Color.Black,
     onBackground = Color.Black,
@@ -33,21 +33,27 @@ private val LightColorPalette = lightColors(
 )
 
 /**
- * El Composable del tema de nuestra aplicación.
- * Ahora decide qué paleta de colores usar basándose en el parámetro darkTheme.
- * @param darkTheme Si es true, se usará el tema oscuro. Si es false, el claro.
+ * Composable del tema principal de la aplicación.
+ * Envuelve el contenido y aplica la paleta de colores correcta.
+ *
+ * @param darkTheme Indica si se debe usar el tema oscuro (true) o claro (false).
+ * @param content El contenido de la UI (la App) al que se aplicará el tema.
  */
 @Composable
 fun AppTheme(
     darkTheme: Boolean,
     content: @Composable () -> Unit
 ) {
+    // Selecciona la paleta de colores (Oscura o Clara)
+    // basándose en el parámetro 'darkTheme'.
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {
         LightColorPalette
     }
 
+    // Aplica el tema de Material Design (colores, tipografía, formas)
+    // al 'content' (contenido) de la aplicación.
     MaterialTheme(
         colors = colors,
         content = content

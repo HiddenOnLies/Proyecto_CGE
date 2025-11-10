@@ -8,46 +8,57 @@ import androidx.compose.ui.unit.dp
 import com.example.demo.AppContainer
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.time.Year // Importamos la clase Year de Java para obtener el año actual
+import java.time.Year // Importa Year de Java para validación.
 
+// UI Composable para la pantalla de generación de boletas.
 @Composable
 fun PantallaBoletas(appContainer: AppContainer) {
-    // --- ESTADO DE LOS INPUTS ---
+    // --- ESTADOS ---
+    // Estados para los campos de texto del formulario.
     var rutInput by remember { mutableStateOf("") }
-    var anioInput by remember { mutableStateOf(Year.now().value.toString()) } // Inicia con el año actual
+    var anioInput by remember { mutableStateOf(Year.now().value.toString()) } // Inicia con año actual.
     var mesInput by remember { mutableStateOf("11") }
+    // Estado para mensajes de éxito/error.
     var mensaje by remember { mutableStateOf("") }
 
-    // --- NUEVOS ESTADOS PARA LA VALIDACIÓN ---
+    // --- VALIDACIÓN ---
+    // Estados booleanos para la validez de cada campo.
     var isAnioValid by remember { mutableStateOf(true) }
     var isMesValid by remember { mutableStateOf(true) }
 
-    // Obtenemos el año actual una sola vez
+    // Obtiene el año actual una vez.
     val currentYear = Year.now().value
 
-    // --- LÓGICA DE VALIDACIÓN ---
-    // Usamos LaunchedEffect para validar los valores iniciales y cada vez que cambian
+    // Valida el año cada vez que 'anioInput' cambia.
     LaunchedEffect(anioInput) {
         val anioNum = anioInput.toIntOrNull()
+        // Es válido si es un número Y no es mayor al año actual.
         isAnioValid = anioNum != null && anioNum <= currentYear
     }
 
+    // Valida el mes cada vez que 'mesInput' cambia.
     LaunchedEffect(mesInput) {
         val mesNum = mesInput.toIntOrNull()
+        // Es válido si es un número Y está entre 1 y 12.
         isMesValid = mesNum != null && mesNum in 1..12
     }
 
+    // El formulario es válido si todos los campos son válidos.
     val isFormValid = isAnioValid && isMesValid && rutInput.isNotBlank()
 
+    // --- LÓGICA ---
     fun generarYExportarBoleta() {
-        // Aunque el botón está deshabilitado, mantenemos esta guarda por seguridad
+        // Doble verificación de seguridad.
         if (!isFormValid) {
             mensaje = "Error: Por favor, corrige los campos inválidos."
             return
         }
         try {
+            // Genera el PDF en memoria.
             val pdfBytes = appContainer.boletaService.exportarPdfClienteMes(rutInput, anioInput.toInt(), mesInput.toInt())
+            // Define la ruta del archivo.
             val path = Paths.get("boleta-$rutInput-${anioInput}-${mesInput}.pdf")
+            // Guarda el archivo en disco.
             Files.write(path, pdfBytes)
             mensaje = "¡Éxito! PDF guardado en: ${path.toAbsolutePath()}"
         } catch (e: Exception) {
@@ -56,7 +67,7 @@ fun PantallaBoletas(appContainer: AppContainer) {
         }
     }
 
-    // --- UI CON VALIDACIÓN INTEGRADA ---
+    // --- UI (VISTA) ---
     Scaffold(
         topBar = {
             Column {
@@ -73,10 +84,12 @@ fun PantallaBoletas(appContainer: AppContainer) {
             modifier = Modifier.fillMaxSize().padding(paddingValues).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // Tarjeta del formulario.
             Card(elevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     Text("Ingresar Datos", style = MaterialTheme.typography.h6)
 
+                    // Campo RUT.
                     OutlinedTextField(
                         value = rutInput,
                         onValueChange = { rutInput = it },
@@ -84,16 +97,18 @@ fun PantallaBoletas(appContainer: AppContainer) {
                         modifier = Modifier.fillMaxWidth()
                     )
 
+                    // Fila para Año y Mes con validaciones visuales.
                     Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        // --- CAMPO AÑO CON VALIDACIÓN ---
+                        // Campo AÑO.
                         Column(modifier = Modifier.weight(1f)) {
                             OutlinedTextField(
                                 value = anioInput,
                                 onValueChange = { anioInput = it },
                                 label = { Text("Año") },
-                                isError = !isAnioValid, // El campo se marca en rojo si no es válido
+                                isError = !isAnioValid, // Borde rojo si es inválido.
                                 modifier = Modifier.fillMaxWidth()
                             )
+                            // Muestra mensaje de error debajo del campo si no es válido.
                             if (!isAnioValid) {
                                 Text(
                                     "El año no puede ser futuro.",
@@ -104,15 +119,16 @@ fun PantallaBoletas(appContainer: AppContainer) {
                             }
                         }
 
-                        // --- CAMPO MES CON VALIDACIÓN ---
+                        // Campo MES.
                         Column(modifier = Modifier.weight(1f)) {
                             OutlinedTextField(
                                 value = mesInput,
                                 onValueChange = { mesInput = it },
                                 label = { Text("Mes") },
-                                isError = !isMesValid, // El campo se marca en rojo si no es válido
+                                isError = !isMesValid, // Borde rojo si es inválido.
                                 modifier = Modifier.fillMaxWidth()
                             )
+                            // Muestra mensaje de error si no es válido.
                             if (!isMesValid) {
                                 Text(
                                     "El mes debe ser entre 1 y 12.",
@@ -124,10 +140,10 @@ fun PantallaBoletas(appContainer: AppContainer) {
                         }
                     }
 
-                    // --- BOTÓN CON ESTADO HABILITADO/DESHABILITADO ---
+                    // Botón de acción.
                     Button(
                         onClick = ::generarYExportarBoleta,
-                        enabled = isFormValid, // El botón solo se activa si todo el formulario es válido
+                        enabled = isFormValid, // Se deshabilita si el formulario es inválido.
                         modifier = Modifier.fillMaxWidth().height(48.dp)
                     ) {
                         Text("Generar y Exportar PDF")
@@ -135,10 +151,12 @@ fun PantallaBoletas(appContainer: AppContainer) {
                 }
             }
 
+            // Tarjeta de mensajes (éxito/error).
             if (mensaje.isNotBlank()) {
                 Card(
                     elevation = 4.dp,
                     modifier = Modifier.fillMaxWidth(),
+                    // Color de fondo según el tipo de mensaje.
                     backgroundColor = if (mensaje.startsWith("Error")) MaterialTheme.colors.error.copy(alpha = 0.2f) else MaterialTheme.colors.secondary.copy(alpha = 0.2f)
                 ) {
                     Text(text = mensaje, modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.body1)
