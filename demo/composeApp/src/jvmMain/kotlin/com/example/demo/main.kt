@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalTime::class)
+@file:OptIn(ExperimentalTime::class) // Habilita el uso de APIs experimentales de Kotlin (Time).
 package com.example.demo
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
@@ -17,36 +17,46 @@ import com.example.demo.ui.PantallaDetalleCliente
 import com.example.demo.ui.Screen
 import kotlin.time.ExperimentalTime
 
+// Punto de entrada de la aplicación de escritorio.
 fun main() = application {
-    // 1. Instancia única de nuestro backend
+    // 1. Crea y "recuerda" la instancia única del contenedor de dependencias (backend).
     val appContainer = remember { AppContainer() }
 
+    // Crea la ventana principal de la aplicación.
     Window(onCloseRequest = ::exitApplication, title = "CGE Gestión") {
-        App(appContainer) // Pasamos el contenedor a nuestra UI principal
+        App(appContainer) // Llama a la UI principal y le pasa el contenedor.
     }
 }
 
+// Composable principal que define la estructura de la UI.
 @Composable
 @Preview
 fun App(appContainer: AppContainer) {
     // --- ESTADO DE NAVEGACIÓN ---
+
+    // Estado para saber qué pantalla principal se muestra (Clientes o Boletas).
     var currentScreen by remember { mutableStateOf(Screen.CLIENTES) }
-    // Nuevo estado para saber qué cliente está seleccionado. Si es null, mostramos la lista.
+    // Estado para la vista maestro/detalle. null = lista, "RUT" = detalle.
     var selectedClientRut by remember { mutableStateOf<String?>(null) }
 
+    // Aplica el tema de Material Design.
     MaterialTheme {
+        // Divide la pantalla horizontalmente: Menú lateral | Contenido.
         Row {
             // --- MENÚ LATERAL DE NAVEGACIÓN ---
             NavigationRail {
+                // Botón de navegación para "Clientes".
                 NavigationRailItem(
                     icon = { Text("CL") },
                     label = { Text("Clientes") },
                     selected = currentScreen == Screen.CLIENTES,
                     onClick = {
                         currentScreen = Screen.CLIENTES
-                        selectedClientRut = null // Limpia la selección al volver al menú principal
+                        // Limpia la selección de detalle al volver al menú principal.
+                        selectedClientRut = null
                     }
                 )
+                // Botón de navegación para "Boletas".
                 NavigationRailItem(
                     icon = { Text("BO") },
                     label = { Text("Boletas") },
@@ -56,21 +66,28 @@ fun App(appContainer: AppContainer) {
             }
 
             // --- ÁREA DE CONTENIDO PRINCIPAL ---
+            // Ocupa todo el espacio restante.
             Box(modifier = Modifier.fillMaxSize()) {
+                // Decide qué pantalla mostrar.
                 when (currentScreen) {
+                    // Si la pantalla actual es CLIENTES...
                     Screen.CLIENTES -> {
                         if (selectedClientRut == null) {
-                            // Si no hay cliente seleccionado, muestra la lista
+                            // Muestra la LISTA (Maestro) si no hay cliente seleccionado.
                             PantallaClientes(appContainer) { rut ->
-                                selectedClientRut = rut // Al hacer clic en un cliente, guardamos su RUT
+                                // Al hacer clic en un cliente, guarda su RUT para mostrar el detalle.
+                                selectedClientRut = rut
                             }
                         } else {
-                            // Si hay un cliente seleccionado, muestra la pantalla de detalle
+                            // Muestra el DETALLE si hay un cliente seleccionado.
                             PantallaDetalleCliente(appContainer, selectedClientRut!!) {
-                                selectedClientRut = null // El botón "Atrás" limpia la selección
+                                // La función "onBack" (botón Atrás) limpia la selección
+                                // y vuelve a la lista.
+                                selectedClientRut = null
                             }
                         }
                     }
+                    // Si la pantalla actual es BOLETAS...
                     Screen.BOLETAS -> PantallaBoletas(appContainer)
                 }
             }

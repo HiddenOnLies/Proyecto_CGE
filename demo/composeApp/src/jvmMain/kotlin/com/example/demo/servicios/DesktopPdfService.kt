@@ -15,21 +15,28 @@ import java.io.ByteArrayOutputStream
  * Utiliza la librería OpenPDF para generar un archivo PDF válido.
  */
 class DesktopPdfService : PdfService {
+
+    // Genera un PDF (como ByteArray) con los datos de una o más boletas.
     override fun generarBoletasPDF(boletas: List<Boleta>, clientes: Map<String, Cliente>): ByteArray {
+        // Usa un ByteArrayOutputStream para escribir el PDF en memoria.
         val outputStream = ByteArrayOutputStream()
         val document = Document()
+        // Vincula el documento con el stream de salida.
         PdfWriter.getInstance(document, outputStream)
 
         document.open()
 
+        // Define las fuentes para el PDF.
         val titleFont = Font(Font.HELVETICA, 18f, Font.BOLD)
         val headerFont = Font(Font.HELVETICA, 12f, Font.BOLD)
         val bodyFont = Font(Font.HELVETICA, 12f, Font.NORMAL)
 
+        // Itera sobre cada boleta para agregarla al documento.
         boletas.forEach { boleta ->
+            // Obtiene los datos del cliente usando el ID de la boleta.
             val cliente = clientes[boleta.idCliente]
 
-            // --- Título y Datos del Cliente ---
+            // --- Añade Título y Datos del Cliente ---
             document.add(Paragraph("Boleta Electrónica CGE", titleFont))
             document.add(Paragraph(" ")) // Espacio
             document.add(Paragraph("Cliente: ${cliente?.nombre ?: "N/A"}", bodyFont))
@@ -37,32 +44,36 @@ class DesktopPdfService : PdfService {
             document.add(Paragraph("Período: ${boleta.mes}/${boleta.anio}", bodyFont))
             document.add(Paragraph(" ")) // Espacio
 
-            // --- Tabla con el Detalle ---
-            val table = PdfPTable(2) // 2 columnas
+            // --- Crea la Tabla con el Detalle de la boleta ---
+            val table = PdfPTable(2) // Tabla de 2 columnas.
             table.widthPercentage = 100f
 
-            // Encabezados de la tabla
+            // Configura y añade los encabezados de la tabla.
             val headerCell1 = Paragraph("Concepto", headerFont)
             val headerCell2 = Paragraph("Valor", headerFont)
             val cell1 = table.defaultCell
-            cell1.backgroundColor = Color.LIGHT_GRAY
+            cell1.backgroundColor = Color.LIGHT_GRAY // Fondo gris para cabecera.
             table.addCell(headerCell1)
             table.addCell(headerCell2)
 
-            // Contenido de la tabla
+            // Obtiene las filas de datos desde la boleta (usando toPdfTable)
+            // y las añade a la tabla.
             boleta.toPdfTable().rows.forEach { row ->
                 table.addCell(Paragraph(row[0], bodyFont))
                 table.addCell(Paragraph(row[1], bodyFont))
             }
+            // Añade la tabla terminada al documento.
             document.add(table)
 
-            // Si hay más de una boleta, añade una nueva página
+            // Si se está generando más de una boleta, añade un salto de página.
             if (boletas.size > 1) {
                 document.newPage()
             }
         }
 
+        // Cierra el documento (finaliza la escritura en el stream).
         document.close()
+        // Devuelve el PDF como un array de bytes.
         return outputStream.toByteArray()
     }
 }
